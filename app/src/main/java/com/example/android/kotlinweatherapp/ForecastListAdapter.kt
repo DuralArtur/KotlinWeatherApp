@@ -2,25 +2,43 @@ package com.example.android.kotlinweatherapp
 
 
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-
+import com.example.android.kotlinweatherapp.db.Forecast
+import com.example.android.kotlinweatherapp.db.ForecastList
+import com.example.android.kotlinweatherapp.utils.ctx
+import com.example.android.kotlinweatherapp.utils.toDateString
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.item_forecast.view.*
 /**
  * Created by Artur on 06-Dec-16.
  */
+class ForecastListAdapter(val weekForecast: ForecastList, val itemClick: (Forecast) -> Unit) :
+        RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
 
-class ForecastListAdapter(val items: List<String>)  :
-        RecyclerView.Adapter<ForecastListAdapter.ViewHolder>(){
-
-    override fun getItemCount(): Int = items.size
-
-    override fun onBindViewHolder(holder:ViewHolder, position: Int) {
-        holder.textView.text = items[position]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.ctx).inflate(R.layout.item_forecast, parent, false)
+        return ViewHolder(view, itemClick)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder{
-        return ViewHolder(TextView(parent.context))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bindForecast(weekForecast[position])
     }
 
-    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+    override fun getItemCount() = weekForecast.size()
+
+    class ViewHolder(view: View, val itemClick: (Forecast) -> Unit) : RecyclerView.ViewHolder(view) {
+
+        fun bindForecast(forecast: Forecast) {
+            with(forecast) {
+                Picasso.with(itemView.ctx).load(iconUrl).into(itemView.icon)
+                itemView.date.text = date.toDateString()
+                itemView.description.text = description
+                itemView.maxTemperature.text = "${high.toString()}º"
+                itemView.minTemperature.text = "${low.toString()}º"
+                itemView.setOnClickListener { itemClick(this) }
+            }
+        }
+    }
 }

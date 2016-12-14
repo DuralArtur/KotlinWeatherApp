@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.android.kotlinweatherapp.MainActivity">
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/forecast_list"
+        android:id="@+id/forecastList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </FrameLayout>
